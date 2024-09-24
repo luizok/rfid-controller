@@ -9,3 +9,15 @@ device-deploy:
 device-debug:
 	cd device && \
 		pio device monitor
+
+infra-init:
+	cd infra && \
+		terraform init -backend-config config.aws.tfbackend
+
+infra-plan:
+	cd infra && \
+		terraform plan -var-file values.tfvars
+
+infra-apply:
+	cd infra && \
+		terraform apply -var-file values.tfvars
