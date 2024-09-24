@@ -1,3 +1,8 @@
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
+endif
+
 device-build:
 	cd device && \
 		pio run --verbose --environment esp32doit-devkit-v1
@@ -16,8 +21,14 @@ infra-init:
 
 infra-plan:
 	cd infra && \
-		terraform plan -var-file values.tfvars
+	terraform plan \
+		-var-file values.tfvars \
+		-var 'topic_name=$(TOPIC_NAME)' \
+		-var 'client_id=$(CLIENT_ID)'
 
 infra-apply:
 	cd infra && \
-		terraform apply -var-file values.tfvars
+	terraform apply \
+		-var-file values.tfvars \
+		-var 'topic_name=$(TOPIC_NAME)' \
+		-var 'client_id=$(CLIENT_ID)'

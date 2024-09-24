@@ -11,3 +11,5 @@
 [Decode and Send 433Mhz RF Signals With Arduino](https://randomnerdtutorials.com/decode-and-send-433-mhz-rf-signals-with-arduino/)
 
 [ESP32 Connects to the Free Public MQTT Broker](https://www.emqx.com/en/blog/esp32-connects-to-the-free-public-mqtt-broker)
+
+[Publish Data Into Topic Using boto3](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/iot-data/client/publish.html)
