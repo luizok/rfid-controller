@@ -5,7 +5,6 @@ endif
 
 device-build:
 	cd device && \
-		ls && \
 		pio run --verbose --environment esp32doit-devkit-v1
 
 device-deploy:
