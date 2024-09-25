@@ -1,16 +1,7 @@
-#include <WiFi.h> 
-#include <ESPAsyncWebServer.h>
+#include <WiFiClientSecure.h> 
 #include <RCSwitch.h>
 #include <MQTTClient.h>
-
-
-#ifndef MY_SSID
-#define MY_SSID ""
-#endif
-
-#ifndef MY_PASSWORD
-#define MY_PASSWORD ""
-#endif
+#include "secrets.h"
 
 const int ledPin = 2;
 void setup() {
@@ -20,6 +11,8 @@ void setup() {
 void loop() {
 	Serial.println(MY_SSID);
 	Serial.println(MY_PASSWORD);
+	Serial.println(MQTT_ENDPOINT);
+	Serial.println(AWS_CERT_CA);
 	digitalWrite(ledPin, HIGH); // Turn the LED on
 	delay(500);                 // Wait for half a second
 	digitalWrite(ledPin, LOW);  // Turn the LED off

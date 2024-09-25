@@ -5,6 +5,7 @@ endif
 
 device-build:
 	cd device && \
+		ls && \
 		pio run --verbose --environment esp32doit-devkit-v1
 
 device-deploy:
@@ -33,6 +34,13 @@ infra-apply:
 		-var 'topic_name=$(TOPIC_NAME)' \
 		-var 'client_id=$(CLIENT_ID)'
 
-infra-get-outputs:
+infra-export-vars:
 	cd infra && \
-	dotenv -f ../.env set AMAZON_CERT "$$(terraform output -json | jq -r '.AmazonRootCA1.value')"
+	terraform output -json | jq -r '.AmazonRootCA1.value' > ../out/ca.crt && \
+	terraform output -json | jq -r '.esp32_cert.value' > ../out/esp32.crt && \
+	terraform output -json | jq -r '.esp32_cert_private_key.value' > ../out/esp32.key && \
+	dotenv -f ../.env set MQTT_ENDPOINT $$(terraform output -json | jq -r '.mqtt_endpoint.value') | exit 0 && \
+	cp ../device/src/secrets.h.example ../device/src/secrets.h && \
+	sed -i -e "/<AWS_CERT_CA>/{r../out/ca.crt" -e "d}" ../device/src/secrets.h && \
+	sed -i -e "/<AWS_CERT_CRT>/{r../out/esp32.crt" -e "d}" ../device/src/secrets.h && \
+	sed -i -e "/<AWS_CERT_PRIVATE>/{r../out/esp32.key" -e "d}" ../device/src/secrets.h
