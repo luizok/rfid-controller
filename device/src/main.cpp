@@ -1,9 +1,12 @@
 #include <WiFiClientSecure.h> 
 #include <RCSwitch.h>
 #include <MQTTClient.h>
+#include <ArduinoJson.h>
 #include "secrets.h"
 
 const int ledPin = 2;
+int blinkDuration = 0;
+
 WiFiClientSecure net = WiFiClientSecure();
 MQTTClient client = MQTTClient(512);
 
@@ -11,10 +14,21 @@ void blink(int ledPin, int duration) {
 	digitalWrite(ledPin, HIGH);
 	delay(duration);
 	digitalWrite(ledPin, LOW);
+	delay(duration);
 }
 
 void messageHandler(String &topic, String &payload) {
-  Serial.println("incoming: " + topic + " - " + payload);
+	// Serial.println("incoming: " + topic + " - " + payload);
+	StaticJsonDocument<200> doc;
+	// Test if parsing succeeds
+	DeserializationError error = deserializeJson(doc, payload);
+	if (error) {
+		Serial.print("deserializeJson() failed: ");
+		Serial.println(error.f_str());
+		return;
+	}
+	// Serial.printf("duration: %d\n", doc["duration"].as<long>());
+	blinkDuration = doc["duration"].as<long>();
 }
 
 void connectAWS() {
@@ -66,8 +80,5 @@ void setup() {
 } 
 void loop() {
 	client.loop();
-	digitalWrite(ledPin, HIGH); // Turn the LED on
-	delay(500);                 // Wait for half a second
-	digitalWrite(ledPin, LOW);  // Turn the LED off
-	delay(500);                 // Wait for half a second
+	blink(ledPin, blinkDuration);
 }
