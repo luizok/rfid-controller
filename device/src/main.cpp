@@ -4,6 +4,11 @@
 #include <ArduinoJson.h>
 #include "secrets.h"
 
+#define BLUE_LED 18
+#define RED_LED 19
+#define YELLOW_LED 22
+#define GREEN_LED 23
+
 const int ledPin = 2;
 int blinkDuration = 0;
 
@@ -31,6 +36,36 @@ void messageHandler(String &topic, String &payload) {
 	blinkDuration = doc["duration"].as<long>();
 }
 
+void messageHandlerLeds(String &topic, String &payload) {
+	StaticJsonDocument<200> doc;
+	DeserializationError error = deserializeJson(doc, payload);
+	if (error) {
+		Serial.print("deserializeJson() failed: ");
+		Serial.println(error.f_str());
+		return;
+	}
+
+
+	String led = doc["led"].as<String>();
+	int state = doc["state"].as<int>();
+	Serial.printf("Received: %s - %d\n", led.c_str(), state);
+	int cLedPin;
+	if(led.equals("blue")) {
+		cLedPin = BLUE_LED;
+	}
+	else if(led.equals("red")) {
+			cLedPin = RED_LED;
+	}
+	else if(led.equals("yellow")) {
+			cLedPin = YELLOW_LED;
+	}
+	else if(led.equals("green")) {
+			cLedPin = GREEN_LED;
+	}
+
+	digitalWrite(cLedPin, state);
+}
+
 void connectAWS() {
 	blink(ledPin, 1000);
 	WiFi.mode(WIFI_STA);
@@ -52,7 +87,7 @@ void connectAWS() {
 	client.begin(MQTT_ENDPOINT, 8883, net);
 
 	// Create a message handler
-	client.onMessage(messageHandler);
+	client.onMessage(messageHandlerLeds);
 
 	Serial.print("Connecting to AWS IOT");
 
@@ -76,6 +111,10 @@ void setup() {
 	delay(5000);
 	Serial.begin(9600);
 	pinMode(ledPin, OUTPUT);
+	pinMode(BLUE_LED, OUTPUT);
+	pinMode(RED_LED, OUTPUT);
+	pinMode(YELLOW_LED, OUTPUT);
+	pinMode(GREEN_LED, OUTPUT);
 	connectAWS();
 } 
 void loop() {
