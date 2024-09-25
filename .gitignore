@@ -4,3 +4,6 @@ device/.pio
 config.aws.tfbackend
 .terraform.lock.hcl
 .terraform
+out/*
+!out/.gitkeep
+secrets.h
