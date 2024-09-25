@@ -39,6 +39,7 @@ infra-export-vars:
 	terraform output -json | jq -r '.esp32_cert.value' > ../out/esp32.crt && \
 	terraform output -json | jq -r '.esp32_cert_private_key.value' > ../out/esp32.key && \
 	dotenv -f ../.env set MQTT_ENDPOINT $$(terraform output -json | jq -r '.mqtt_endpoint.value') | exit 0 && \
+	dotenv -f ../.env set APIGTW_INVOKE_URL $$(terraform output -json | jq -r '.apigtw_invoke_url.value') | exit 0 && \
 	cp ../device/src/secrets.h.example ../device/src/secrets.h && \
 	sed -i -e "/<AWS_CERT_CA>/{r../out/ca.crt" -e "d}" ../device/src/secrets.h && \
 	sed -i -e "/<AWS_CERT_CRT>/{r../out/esp32.crt" -e "d}" ../device/src/secrets.h && \

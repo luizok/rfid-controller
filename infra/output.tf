@@ -15,3 +15,7 @@ output "esp32_cert_private_key" {
 output "mqtt_endpoint" {
     value = data.aws_iot_endpoint.thing_ats_mqtt.endpoint_address
 }
+
+output "apigtw_invoke_url" {
+    value = aws_api_gateway_deployment.api-deployment.invoke_url
+}

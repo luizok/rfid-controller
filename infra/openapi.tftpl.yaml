@@ -1,0 +1,75 @@
+openapi: "3.0.1"
+info:
+  title: "${api-name}"
+  description: "API to orchestrate integration between Trello and Github"
+  version: "1.0"
+paths:
+  /publish:
+    post:
+      summary: Publish some message into IoT topic
+      description: |
+        Publish some message into IoT topic
+      x-amazon-apigateway-integration:
+        type: aws
+        passthroughBehavior: when_no_match
+        uri: ${send_to_topic_lambda_arn}
+        credentials: ${lambda_invoke_role_arn}
+        httpMethod: POST
+        requestTemplates:
+          application/json: $input.json('$')
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers : "'*'"
+              method.response.header.Access-Control-Allow-Methods : "'*'"
+              method.response.header.Access-Control-Allow-Origin : "'*'"
+            responseTemplates:
+              application/json: |
+                #set($inputRoot = $input.path('$'))
+                #set($context.responseOverride.status = $input.path('$.statusCode'))
+                #set($context.requestOverride.header.content-type = $input.path('$.contentType'))
+                $input.json('$.body')
+      responses:
+        200:
+          description: Success response
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"
+    options:
+      summary: CORS support
+      description: |
+        Enable CORS by returning correct headers
+      tags:
+        - CORS
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers : "'*'"
+              method.response.header.Access-Control-Allow-Methods : "'*'"
+              method.response.header.Access-Control-Allow-Origin : "'*'"
+            responseTemplates:
+              application/json: |
+                {}
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"

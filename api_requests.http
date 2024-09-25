@@ -1,0 +1,11 @@
+@url = {{$dotenv APIGTW_INVOKE_URL}}
+
+# status can be 0 or 1
+# led can be red, green, blue or yellow
+POST {{url}}/publish HTTP/1.1
+Content-Type: application/json
+
+{
+    "led": "red",
+    "state": 0
+}
