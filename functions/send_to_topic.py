@@ -13,7 +13,7 @@ def lambda_handler(payload, context):
 
     res = boto3.client('iot-data').publish(
         topic=topic_name,
-        payload=payload
+        payload=json.dumps(payload)
     )
     return res
 
@@ -23,8 +23,8 @@ if __name__ == '__main__':
     colors = ['blue', 'red', 'yellow', 'green']
 
     for color in cycle(colors):
-        lambda_handler(json.dumps({'led': color, 'state': 1}), None)
+        lambda_handler({'led': color, 'state': 1}, None)
         print(f'Published: {color} - 1')
         sleep(.5)
-        lambda_handler(json.dumps({'led': color, 'state': 0}), None)
+        lambda_handler({'led': color, 'state': 0}, None)
         print(f'Published: {color} - 0')

@@ -1,5 +1,5 @@
 output "AmazonRootCA1" {
-    value = data.http.AmazonRootCA1.body
+    value = data.http.AmazonRootCA1.response_body
 }
 
 output "esp32_cert" {

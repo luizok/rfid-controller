@@ -30,7 +30,7 @@ resource "aws_iam_policy" "lambda_policy" {
     policy = data.aws_iam_policy_document.lambda_policy.json
 }
 
-resource "aws_iam_role" "lambda_role" {
+resource "aws_iam_role" "send_to_topic_role" {
     name = "${var.project-name}-lambda-role"
     assume_role_policy = <<EOF
     {
@@ -49,7 +49,7 @@ resource "aws_iam_role" "lambda_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_role_attachment" {
-    role       = aws_iam_role.lambda_role.name
+    role       = aws_iam_role.send_to_topic_role.name
     policy_arn = aws_iam_policy.lambda_policy.arn
 }
 
