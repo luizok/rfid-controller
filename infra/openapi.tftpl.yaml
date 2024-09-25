@@ -29,7 +29,7 @@ paths:
                 #set($inputRoot = $input.path('$'))
                 #set($context.responseOverride.status = $input.path('$.statusCode'))
                 #set($context.requestOverride.header.content-type = $input.path('$.contentType'))
-                $input.json('$.body')
+                $input.path('$.body')
       responses:
         200:
           description: Success response

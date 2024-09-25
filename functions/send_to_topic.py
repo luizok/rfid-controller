@@ -15,7 +15,23 @@ def lambda_handler(payload, context):
         topic=topic_name,
         payload=json.dumps(payload)
     )
-    return res
+
+    if res['ResponseMetadata']['HTTPStatusCode'] == 200:
+        return {
+            "statusCode": 200,
+            "contentType": "application/json",
+            "body": json.dumps({
+                "message": f'Success changing {payload["led"]} LED state to {payload["state"]}'
+            })
+        }
+
+    return {
+        "statusCode": 500,
+        "contentType": "application/json",
+        "body": json.dumps({
+            "message": 'Unable to change LED state'
+        })
+    }
 
 
 if __name__ == '__main__':
