@@ -1,3 +1,22 @@
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+      version = "~> 6.7.0"
+    }
+
+    null = {
+      source = "hashicrop/null"
+      version = "~> 3.2.4"
+    }
+
+    archive = {
+      source = "hashicrop/archive"
+      version = "~> 2.7.1"
+    }
+  }
+}
+
 provider "aws" {
   default_tags {
     tags = {
@@ -31,6 +50,6 @@ data "http" "AmazonRootCA1" {
 
 locals {
   aws_account_id              = data.aws_caller_identity.current.account_id
-  aws_region                  = data.aws_region.current.name
+  aws_region                  = data.aws_region.current.region
   openapi_path                = "./openapi.tftpl.yaml"
 }

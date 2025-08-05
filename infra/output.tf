@@ -17,5 +17,5 @@ output "mqtt_endpoint" {
 }
 
 output "apigtw_invoke_url" {
-    value = aws_api_gateway_deployment.api-deployment.invoke_url
+    value = aws_api_gateway_stage.api-stage.invoke_url
 }

@@ -16,8 +16,13 @@ resource "aws_api_gateway_rest_api" "api" {
 
 resource "aws_api_gateway_deployment" "api-deployment" {
   rest_api_id = aws_api_gateway_rest_api.api.id
-  stage_name  = "dev"
   triggers = {
     redeployment = sha1(file(local.openapi_path))
   }
+}
+
+resource "aws_api_gateway_stage" "api-stage" {
+  stage_name  = "dev"
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  deployment_id = aws_api_gateway_deployment.api-deployment.id
 }

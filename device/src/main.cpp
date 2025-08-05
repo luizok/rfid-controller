@@ -118,6 +118,12 @@ void setup() {
 	connectAWS();
 } 
 void loop() {
+
+	if(
+		WiFi.status() != WL_CONNECTED ||
+		!client.connected()
+	) 
+		connectAWS();
+
 	client.loop();
-	blink(ledPin, blinkDuration);
 }
