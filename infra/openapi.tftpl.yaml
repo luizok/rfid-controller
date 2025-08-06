@@ -86,15 +86,15 @@ paths:
       description: |
         Update the last seen hash
       x-amazon-apigateway-integration:
-        type: mock
-        requestTemplates:
-          # echo requests as responses
-          # https://stackoverflow.com/questions/47918477/aws-api-gateway-use-mock-integration-to-echo-response-body
-          application/json: |
-            #set($context.requestOverride.path.body = $input.body)
-            {
-              "statusCode" : 200
-            }
+        type: aws
+        passthroughBehavior: when_no_match
+        uri: ${ssm_put_parameter_arn}
+        credentials: ${apigtw_role_arn}
+        httpMethod: POST
+        requestParameters:
+          integration.request.querystring.Name: "'${ssm_parameter_name}'"
+          integration.request.querystring.Overwrite: "'true'"
+          integration.request.querystring.Value: method.request.body.hash
         responses:
           "default":
             statusCode: "200"
@@ -104,10 +104,8 @@ paths:
               method.response.header.Access-Control-Allow-Origin : "'*'"
             responseTemplates:
               application/json: |
-                #set($context.responseOverride.status = $input.path('$.statusCode'))
-                #set($body = $context.requestOverride.path.body)
                 {
-                  "echoRequest": $body
+                  "status": "ok"
                 }
       responses:
         200:

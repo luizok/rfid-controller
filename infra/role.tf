@@ -118,6 +118,18 @@ data "aws_iam_policy_document" "apigtw_policy" {
             "arn:aws:logs:*:*:*"
         ]
     }
+
+    statement {
+      sid = "SSMParameterAccess"
+      effect = "Allow"
+      actions = [
+            "ssm:GetParameter",
+            "ssm:PutParameter"
+      ]
+      resources = [
+        "arn:aws:ssm:${local.aws_region}:${local.aws_account_id}:*"
+      ]
+    }
 }
 
 resource "aws_iam_policy" "apigtw_policy" {
