@@ -22,8 +22,14 @@ resource "aws_lambda_function" "send_to_topic" {
   }
 }
 
+resource "aws_lambda_alias" "alias" {
+  name             = "dev"
+  function_name    = aws_lambda_function.send_to_topic.function_name
+  function_version = aws_lambda_function.send_to_topic.version
+}
+
 resource "aws_lambda_provisioned_concurrency_config" "provisioned" {
   function_name                     = aws_lambda_function.send_to_topic.function_name
   provisioned_concurrent_executions = 1
-  qualifier                         = aws_lambda_function.send_to_topic.version
+  qualifier                         = aws_lambda_alias.alias.name
 }

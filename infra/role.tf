@@ -102,7 +102,20 @@ data "aws_iam_policy_document" "lamba_invoke_policy" {
             "lambda:InvokeFunction"
         ]
         resources = [
-            aws_lambda_function.send_to_topic.arn
+            aws_lambda_alias.alias.arn
+        ]
+    }
+
+    statement {
+        sid = "Logging"
+        effect = "Allow"
+        actions = [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents"
+        ]
+        resources = [
+            "arn:aws:logs:*:*:*"
         ]
     }
 }
