@@ -6,6 +6,7 @@ resource "aws_api_gateway_rest_api" "api" {
     api-name                       = var.project-name,
     send_to_topic_lambda_arn       = aws_lambda_alias.alias.invoke_arn,
     apigtw_role_arn                = aws_iam_role.apigtw_role.arn,
+    ssm_get_parameter_arn          = "arn:aws:apigateway:${local.aws_region}:ssm:action/GetParameter",
     ssm_put_parameter_arn          = "arn:aws:apigateway:${local.aws_region}:ssm:action/PutParameter",
     ssm_parameter_name             = aws_ssm_parameter.last_hash.name
   })
