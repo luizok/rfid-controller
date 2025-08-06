@@ -22,7 +22,7 @@ paths:
               "led": "$params.led",
               "state": $params.state,
               "timestamp": $context.requestTimeEpoch,
-              "callbackUrl": "$context.domainName/$context.stage/lastHash"
+              "callbackUrl": "https://$context.domainName/$context.stage/lastHash"
             }
         responses:
           "default":

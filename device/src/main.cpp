@@ -39,7 +39,7 @@ void messageHandler(String &topic, String &payload) {
 void updateLastHash(String &cbUrl, String &hash) {
 
 	HTTPClient client;
-	client.begin("https://" + cbUrl);
+	client.begin(cbUrl);
 	client.addHeader("Content-Type", "application/json");
 
 	StaticJsonDocument<200> doc;
