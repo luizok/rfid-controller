@@ -5,7 +5,7 @@ resource "aws_api_gateway_rest_api" "api" {
   body = templatefile(local.openapi_path, {
     api-name                       = var.project-name,
     send_to_topic_lambda_arn       = aws_lambda_alias.alias.invoke_arn,
-    lambda_invoke_role_arn         = aws_iam_role.lamba_invoke_role.arn
+    apigtw_role_arn                = aws_iam_role.apigtw_role.arn
   })
 
 

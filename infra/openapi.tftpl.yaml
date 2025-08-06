@@ -13,7 +13,7 @@ paths:
         type: aws
         passthroughBehavior: when_no_match
         uri: ${send_to_topic_lambda_arn}
-        credentials: ${lambda_invoke_role_arn}
+        credentials: ${apigtw_role_arn}
         httpMethod: POST
         requestTemplates:
           application/json: |

@@ -93,7 +93,7 @@ resource "aws_iot_policy" "thing" {
     policy = data.aws_iam_policy_document.aws_iot_thing_policy.json
 }
 
-data "aws_iam_policy_document" "lamba_invoke_policy" {
+data "aws_iam_policy_document" "apigtw_policy" {
     version = "2012-10-17"
     statement {
         sid = "InvokeLambda"
@@ -120,13 +120,13 @@ data "aws_iam_policy_document" "lamba_invoke_policy" {
     }
 }
 
-resource "aws_iam_policy" "lamba_invoke_policy" {
-    name = "${var.project-name}-lamba-invoke-policy"
-    policy = data.aws_iam_policy_document.lamba_invoke_policy.json
+resource "aws_iam_policy" "apigtw_policy" {
+    name = "${var.project-name}-apigtw-policy"
+    policy = data.aws_iam_policy_document.apigtw_policy.json
 }
 
-resource "aws_iam_role" "lamba_invoke_role" {
-  name = "${var.project-name}-lamba-invoke-role"
+resource "aws_iam_role" "apigtw_role" {
+  name = "${var.project-name}-apigtw-role"
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
@@ -147,7 +147,7 @@ resource "aws_iam_role" "lamba_invoke_role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "lamba_invoke_role_attachment" {
-  role       = aws_iam_role.lamba_invoke_role.name
-  policy_arn = aws_iam_policy.lamba_invoke_policy.arn
+resource "aws_iam_role_policy_attachment" "apigtw_role_attachment" {
+  role       = aws_iam_role.apigtw_role.name
+  policy_arn = aws_iam_policy.apigtw_policy.arn
 }
