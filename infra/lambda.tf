@@ -13,10 +13,17 @@ resource "aws_lambda_function" "send_to_topic" {
   source_code_hash = data.archive_file.api.output_base64sha256
   timeout          = 10
   memory_size      = 128
+  publish          = true
 
   environment {
     variables = {
       TOPIC_NAME = var.topic_name
     }
   }
+}
+
+resource "aws_lambda_provisioned_concurrency_config" "provisioned" {
+  function_name                     = aws_lambda_function.send_to_topic.function_name
+  provisioned_concurrent_executions = 1
+  qualifier                         = aws_lambda_function.send_to_topic.version
 }
