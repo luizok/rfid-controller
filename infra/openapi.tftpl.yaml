@@ -79,3 +79,76 @@ paths:
               type: "string"
             Access-Control-Allow-Origin:
               type: "string"
+
+  /lastHash:
+    post:
+      summary: Update the last seen hash
+      description: |
+        Update the last seen hash
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          # echo requests as responses
+          # https://stackoverflow.com/questions/47918477/aws-api-gateway-use-mock-integration-to-echo-response-body
+          application/json: |
+            #set($context.requestOverride.path.body = $input.body)
+            {
+              "statusCode" : 200
+            }
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers : "'*'"
+              method.response.header.Access-Control-Allow-Methods : "'*'"
+              method.response.header.Access-Control-Allow-Origin : "'*'"
+            responseTemplates:
+              application/json: |
+                #set($context.responseOverride.status = $input.path('$.statusCode'))
+                #set($body = $context.requestOverride.path.body)
+                {
+                  "echoRequest": $body
+                }
+      responses:
+        200:
+          description: Success response
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"
+    options:
+      summary: CORS support
+      description: |
+        Enable CORS by returning correct headers
+      tags:
+        - CORS
+      x-amazon-apigateway-integration:
+        type: mock
+        requestTemplates:
+          application/json: |
+            {
+              "statusCode" : 200
+            }
+        responses:
+          "default":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Headers : "'*'"
+              method.response.header.Access-Control-Allow-Methods : "'*'"
+              method.response.header.Access-Control-Allow-Origin : "'*'"
+            responseTemplates:
+              application/json: |
+                {}
+      responses:
+        200:
+          description: Default response for CORS method
+          headers:
+            Access-Control-Allow-Headers:
+              type: "string"
+            Access-Control-Allow-Methods:
+              type: "string"
+            Access-Control-Allow-Origin:
+              type: "string"

@@ -1,7 +1,7 @@
 #include <WiFiClientSecure.h> 
-#include <RCSwitch.h>
 #include <MQTTClient.h>
 #include <ArduinoJson.h>
+#include <HTTPClient.h>
 #include "secrets.h"
 
 #define BLUE_LED 18
@@ -36,6 +36,27 @@ void messageHandler(String &topic, String &payload) {
 	blinkDuration = doc["duration"].as<long>();
 }
 
+void updateLastHash(String &cbUrl, String &hash) {
+
+	HTTPClient client;
+	client.begin("https://" + cbUrl);
+	client.addHeader("Content-Type", "application/json");
+
+	StaticJsonDocument<200> doc;
+	doc["hash"] = hash;
+	String jsonBody;
+	serializeJson(doc, jsonBody);
+
+	int resCode = client.POST(jsonBody);
+
+	if(resCode > 0) {
+      Serial.print("HTTP Response code: ");
+    } else {
+      Serial.print("Error code: ");
+    }
+      Serial.println(resCode);
+}
+
 void messageHandlerLeds(String &topic, String &payload) {
 	StaticJsonDocument<200> doc;
 	DeserializationError error = deserializeJson(doc, payload);
@@ -45,10 +66,11 @@ void messageHandlerLeds(String &topic, String &payload) {
 		return;
 	}
 
-
+	Serial.println(payload);
 	String led = doc["led"].as<String>();
 	int state = doc["state"].as<int>();
-	Serial.printf("Received: %s - %d\n", led.c_str(), state);
+	String hash = doc["hash"].as<String>();
+	String cbUrl = doc["callbackUrl"].as<String>();
 	int cLedPin;
 	if(led.equals("blue")) {
 		cLedPin = BLUE_LED;
@@ -64,6 +86,7 @@ void messageHandlerLeds(String &topic, String &payload) {
 	}
 
 	digitalWrite(cLedPin, state);
+	updateLastHash(cbUrl, hash);
 }
 
 void connectAWS() {
@@ -71,7 +94,7 @@ void connectAWS() {
 	WiFi.mode(WIFI_STA);
 	WiFi.begin(MY_SSID, MY_PASSWORD);
 
-	Serial.println("Connecting to Wi-Fi");
+	Serial.print("Connecting to Wi-Fi");
 
 	while (WiFi.status() != WL_CONNECTED){
 		blink(ledPin, 500);
@@ -89,7 +112,7 @@ void connectAWS() {
 	// Create a message handler
 	client.onMessage(messageHandlerLeds);
 
-	Serial.print("Connecting to AWS IOT");
+	Serial.print("\nConnecting to AWS IOT");
 
 	while (!client.connect(CLIENT_ID)) {
 		Serial.print(".");
