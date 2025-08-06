@@ -17,7 +17,7 @@ def split_url(url):
     return host, path
 
 
-def get_last_hash(callback_url, retries=3, delay=1):
+def get_last_hash(callback_url, retries=3, delay=.5):
     attempt = 0
 
     host, path = split_url(callback_url)
@@ -42,7 +42,7 @@ def get_last_hash(callback_url, retries=3, delay=1):
             attempt += 1
             if attempt < retries:
                 print(f"Aguardando {delay} segundos para nova tentativa...")
-                time.sleep(delay)
+                sleep(delay)
             else:
                 print("Máximo de tentativas atingido. Falha na requisição.")
                 return None
