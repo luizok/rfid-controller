@@ -16,7 +16,14 @@ paths:
         credentials: ${lambda_invoke_role_arn}
         httpMethod: POST
         requestTemplates:
-          application/json: $input.json('$')
+          application/json: |
+            #set($params = $input.path('$'))
+            {
+              "led": "$params.led",
+              "state": $params.state,
+              "timestamp": $context.requestTimeEpoch,
+              "callbackUrl": "$context.domainName/$context.stage/lastHash"
+            }
         responses:
           "default":
             statusCode: "200"
@@ -26,7 +33,6 @@ paths:
               method.response.header.Access-Control-Allow-Origin : "'*'"
             responseTemplates:
               application/json: |
-                #set($inputRoot = $input.path('$'))
                 #set($context.responseOverride.status = $input.path('$.statusCode'))
                 #set($context.requestOverride.header.content-type = $input.path('$.contentType'))
                 $input.path('$.body')
