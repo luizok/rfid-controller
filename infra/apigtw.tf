@@ -19,6 +19,10 @@ resource "aws_api_gateway_deployment" "api-deployment" {
   triggers = {
     redeployment = sha1(file(local.openapi_path))
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_api_gateway_stage" "api-stage" {
