@@ -9,3 +9,15 @@ Content-Type: application/json
     "led": "red",
     "state": 0
 }
+
+###
+POST {{url}}/lastHash HTTP/1.1 
+Content-Type: application/json
+
+{
+    "hash": "{{$guid}}"
+}
+
+###
+GET {{url}}/lastHash HTTP/1.1 
+Content-Type: application/json
