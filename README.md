@@ -13,3 +13,11 @@
 [ESP32 Connects to the Free Public MQTT Broker](https://www.emqx.com/en/blog/esp32-connects-to-the-free-public-mqtt-broker)
 
 [Publish Data Into Topic Using boto3](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/iot-data/client/publish.html)
+
+[API Gateway template context variables](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-mapping-template-reference.html)
+
+[API Gateway template mapping examples](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-mapping-variable-examples.html)
+
+[x-amazon-integration object (openapi)](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-swagger-extensions-integration.html)
+
+[AWS Service resource integration type](https://docs.aws.amazon.com/apigateway/latest/developerguide/getting-started-aws-proxy.html)
