@@ -48,6 +48,7 @@ void updateLastHash(String &cbUrl, String &hash) {
 	serializeJson(doc, jsonBody);
 
 	int resCode = client.POST(jsonBody);
+	blink(ledPin, 100);
 
 	if(resCode > 0) {
       Serial.print("HTTP Response code: ");
