@@ -23,6 +23,17 @@ data "aws_iam_policy_document" "lambda_policy" {
             "arn:aws:iot:${local.aws_region}:${local.aws_account_id}:topic/${var.topic_name}"
         ]
     }
+
+    statement {
+      sid = "SSMParameterAccess"
+      effect = "Allow"
+      actions = [
+            "ssm:GetParameter"
+      ]
+      resources = [
+        "arn:aws:ssm:${local.aws_region}:${local.aws_account_id}:*"
+      ]
+    }
 }
 
 resource "aws_iam_policy" "lambda_policy" {
@@ -123,7 +134,6 @@ data "aws_iam_policy_document" "apigtw_policy" {
       sid = "SSMParameterAccess"
       effect = "Allow"
       actions = [
-            "ssm:GetParameter",
             "ssm:PutParameter"
       ]
       resources = [

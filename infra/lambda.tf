@@ -17,7 +17,8 @@ resource "aws_lambda_function" "send_to_topic" {
 
   environment {
     variables = {
-      TOPIC_NAME = var.topic_name
+      TOPIC_NAME    = var.topic_name
+      SSM_LAST_HASH = aws_ssm_parameter.last_hash.name
     }
   }
 }

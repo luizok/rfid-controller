@@ -81,40 +81,6 @@ paths:
               type: "string"
 
   /lastHash:
-    get:
-      summary: Get the last seen hash
-      description: |
-        Get the last seen hash
-      x-amazon-apigateway-integration:
-        type: aws
-        passthroughBehavior: when_no_match
-        uri: ${ssm_get_parameter_arn}
-        credentials: ${apigtw_role_arn}
-        httpMethod: POST
-        requestParameters:
-          integration.request.querystring.Name: "'${ssm_parameter_name}'"
-        responses:
-          "default":
-            statusCode: "200"
-            responseParameters:
-              method.response.header.Access-Control-Allow-Headers : "'*'"
-              method.response.header.Access-Control-Allow-Methods : "'*'"
-              method.response.header.Access-Control-Allow-Origin : "'*'"
-            responseTemplates:
-              application/json: |
-                {
-                  "hash": "$input.path('$.GetParameterResponse.GetParameterResult.Parameter.Value')"
-                }
-      responses:
-        200:
-          description: Success response
-          headers:
-            Access-Control-Allow-Headers:
-              type: "string"
-            Access-Control-Allow-Methods:
-              type: "string"
-            Access-Control-Allow-Origin:
-              type: "string"
     post:
       summary: Update the last seen hash
       description: |

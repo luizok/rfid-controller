@@ -4,7 +4,6 @@ import hashlib
 import json
 import os
 from time import sleep
-from urllib.parse import urlparse
 
 import boto3
 
@@ -17,25 +16,17 @@ def split_url(url):
     return host, path
 
 
-def get_last_hash(callback_url, retries=3, delay=.5):
+def get_last_hash(ssm_parameter, retries=3, delay=.5):
     attempt = 0
-
-    host, path = split_url(callback_url)
+    client = boto3.client('ssm')
 
     while attempt < retries:
         try:
-            print(f"Tentativa {attempt + 1} de {retries}...")
-            conn = http.client.HTTPSConnection(host, timeout=2)
-            conn.request("GET", path)
-            response = conn.getresponse()
-            data = response.read().decode("utf-8")
-            conn.close()
+            param = client.get_parameter(Name=ssm_parameter)
+            last_hash = param['Parameter']['Value']
+            return last_hash
 
-            if 200 <= response.status < 300:
-                last_hash = json.loads(data)['hash']
-                return last_hash
-
-            raise Exception(f"Erro HTTP {response.status}")
+            raise Exception(f"Erro HTTP {param}")
 
         except Exception as e:
             print(f"Erro: {e}")
@@ -76,9 +67,9 @@ def lambda_handler(payload, context):
     assert res['ResponseMetadata']['HTTPStatusCode'] == 200
 
     count = 1
-    max_tries = 3
+    max_tries = 5
     while count <= max_tries:
-        last_hash = get_last_hash(payload['callbackUrl'])
+        last_hash = get_last_hash(os.getenv('SSM_LAST_HASH'))
         if last_hash == hash_md5:
             return {
                 "statusCode": 200,
@@ -87,7 +78,8 @@ def lambda_handler(payload, context):
                     "message": f'Request Id {last_hash} succeeded'
                 })
             }
-        sleep(.5)
+        count += 1
+        sleep(1)
 
     return {
         "statusCode": 500,
